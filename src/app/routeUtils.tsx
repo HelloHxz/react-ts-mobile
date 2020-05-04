@@ -1,41 +1,22 @@
-interface IRouteParams {
-  path: string;
-  query?: IQuery;
-}
-
 export interface IURLInfo {
   href: string;
   hash: string;
   pathname: string;
+  pagename: string;
   routeSeed: number;
   routeKey: string;
   query: IQuery;
 }
 
-interface IQuery {
+export interface IQuery {
   [key: string]: string | number | boolean;
 }
 
-enum RouteAction {
-  FORWARD,
-  BACK,
-  REFRESH,
-  INIT,
-}
+class RouteUtils {
+  public routeSeedKey: string = '';
 
-class URLUtils {
-  private routeSeed: number = 0;
-  private routeSeedKey: string = '__r';
-  public routeAction: RouteAction = RouteAction.INIT;
-
-  public go = (params: IRouteParams): void => {
-    this.routeAction = RouteAction.FORWARD;
-    window.location.hash = '';
-  };
-
-  public back = (params: IRouteParams): void => {
-    this.routeAction = RouteAction.BACK;
-    window.history.go(-1);
+  public setRouteSeedKey = (seed: string): void => {
+    this.routeSeedKey = seed;
   };
 
   public getUrlInfo = (): IURLInfo => {
@@ -56,6 +37,34 @@ class URLUtils {
         query,
       },
     };
+  };
+
+  public combinePathAndQuery = (path: string, query?: IQuery): string => {
+    let _path: string = path || '';
+    if (_path.indexOf('#') === 0) {
+      _path = _path.substring(1);
+    }
+    let hash = `#${_path}`;
+    if (!query) {
+      return hash;
+    }
+    const queryStr = this.queryToString(query);
+    if (queryStr.length > 0) {
+      hash = `${hash}?${queryStr}`;
+    }
+    return hash;
+  };
+
+  private queryToString = (query: IQuery): string => {
+    const queryArr: string[] = [];
+    const _query: IQuery = query || {};
+    for (const key in _query) {
+      const pVal: string | boolean | number = _query[key];
+      if (!isNaN(pVal as number) || typeof pVal === 'string' || pVal === false || pVal === true) {
+        queryArr.push(`${key}=${encodeURIComponent(pVal)}`);
+      }
+    }
+    return queryArr.join('&');
   };
 
   public getQueryFromUrl = (_urlInfo: IURLInfo | null): IQuery => {
@@ -110,4 +119,4 @@ class URLUtils {
   };
 }
 
-export default new URLUtils();
+export default new RouteUtils();

@@ -1,17 +1,15 @@
-import { App } from 'star-mobile';
+import { App, LazyPage } from 'star-mobile';
 import './index.less';
-import HomPage from './pages/home';
 
 window.onload = (): void => {
   App.init({
     wrapper: document.getElementById('app_root'),
     root: 'home',
     pages: {
-      home: HomPage,
-      // eslint-disable-next-line
-      list: () => {
+      home: require('./pages/home').default,
+      list: new LazyPage(() => {
         return import('./pages/home');
-      },
+      }),
     },
   });
 };

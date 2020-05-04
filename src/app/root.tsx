@@ -1,12 +1,12 @@
 import React, { ReactElement, useEffect, useState } from 'react';
 import Route, { IRouteProps } from '../route';
-import URLUtils, { IURLInfo } from './urlUtils';
+import RouteUtils, { IURLInfo } from './routeUtils';
 
 const Root = (props): ReactElement => {
   const getPath = (): IRouteProps => {
-    const urlInfo: IURLInfo = URLUtils.getUrlInfo();
+    const urlInfo: IURLInfo = RouteUtils.getUrlInfo();
     return {
-      path: 'home',
+      path: urlInfo.pagename,
       seed: urlInfo.routeSeed,
     };
   };

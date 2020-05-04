@@ -1,5 +1,6 @@
 import React, { ReactElement } from 'react';
 import App from '../app';
+import LazyPage from '../lazyPage';
 
 interface IPageViewProps {
   pageName: string;
@@ -19,7 +20,14 @@ class PageView extends React.Component<IPageViewProps, IPageViewState> {
     const { initProps } = App;
     if (initProps) {
       const { pages } = initProps;
-      const Pa = pages[pageName] as React.FunctionComponent;
+      const p = pages[pageName];
+      if (!p) {
+        return <div>NotFound {pageName}</div>;
+      }
+      if (p instanceof LazyPage) {
+        return <div>lazy</div>;
+      }
+      const Pa = p as React.FunctionComponent;
       return (
         <div>
           <Pa />
