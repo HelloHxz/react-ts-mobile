@@ -1,14 +1,13 @@
 import React, { Component, FunctionComponent } from 'react';
 import ReactDOM from 'react-dom';
 import Root from './root';
-import LazyPage from '../lazyPage';
 import RouteUtils, { IQuery } from './routeUtils';
 
 interface IAppInitPops {
   wrapper?: HTMLElement | null;
   root?: string;
   pages: {
-    [pageName: string]: Component | FunctionComponent | Function | LazyPage;
+    [pageName: string]: Component | FunctionComponent | Function;
   };
 }
 

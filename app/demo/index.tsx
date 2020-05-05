@@ -7,8 +7,8 @@ window.onload = (): void => {
     root: 'home',
     pages: {
       home: require('./pages/home').default,
-      list: new LazyPage(() => {
-        return import('./pages/home');
+      list: LazyPage(() => {
+        return import('./pages/list');
       }),
     },
   });

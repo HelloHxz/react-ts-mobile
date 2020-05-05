@@ -93,13 +93,14 @@ class Route extends React.Component<IRouteProps, IRouteState> {
     const pages: ReactElement[] = [];
     for (let i = 0, j = historyStack.length; i < j; i += 1) {
       const item: IStackItem = historyStack[i];
-      const { pageKey, remainingPath, pageName } = item;
-      pages.push(<PageView isDestroy={false} key={pageKey} path={remainingPath} pageName={pageName} />);
+      const { pageKey, remainingPath, pageName, seed } = item;
+      pages.push(<PageView seed={seed} isDestroy={false} key={pageKey} path={remainingPath} pageName={pageName} />);
     }
     if (destoryPage) {
       pages.push(
         <PageView
           isDestroy={true}
+          seed={destoryPage.seed}
           key={destoryPage.pageKey}
           path={destoryPage.remainingPath}
           pageName={destoryPage.pageName}

@@ -1,12 +1,6 @@
 import React, { ReactElement } from 'react';
 import App from '../app';
-import LazyPage from '../lazyPage';
-
-interface IPageViewProps {
-  pageName: string;
-  path: string;
-  isDestroy: boolean;
-}
+import { IPageViewProps } from '../../index.d';
 
 interface IPageViewState {
   pages: string;
@@ -15,8 +9,6 @@ interface IPageViewState {
 class PageView extends React.Component<IPageViewProps, IPageViewState> {
   constructor(props: IPageViewProps) {
     super(props);
-    const { pageName, isDestroy } = this.props;
-    console.log(pageName+"  load");
   }
 
   render = (): ReactElement => {
@@ -28,13 +20,10 @@ class PageView extends React.Component<IPageViewProps, IPageViewState> {
       if (!p) {
         return <div>NotFound {pageName}</div>;
       }
-      if (p instanceof LazyPage) {
-        return <div>lazy {isDestroy ? 'sile' : 'huozhe'}</div>;
-      }
       const Pa = p as React.FunctionComponent;
       return (
         <div>
-          <Pa />
+          <Pa {...this.props} />
           {isDestroy ? 'sile' : 'huozhe'}
         </div>
       );
