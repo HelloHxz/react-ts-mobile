@@ -12,6 +12,7 @@ interface IStackItem {
   path: string;
   pageKey: string;
   seed: number;
+  isDestroy: boolean;
   remainingPath: string;
   pageName: string;
 }
@@ -19,6 +20,7 @@ interface IStackItem {
 interface IRouteState {
   path: string;
   seed: number;
+  isDestroy: boolean;
   remainingPath: string;
   pageName: string;
   pageKey: string;
@@ -32,6 +34,7 @@ class Route extends React.Component<IRouteProps, IRouteState> {
       path: '',
       seed: -1,
       pageName: '',
+      isDestroy: false,
       remainingPath: '',
       pageKey: '',
       historyStack: [],
@@ -57,16 +60,30 @@ class Route extends React.Component<IRouteProps, IRouteState> {
     const pageName = pathInfo.pageName;
     const remainingPath = pathInfo.remaining;
     const pageKey = `${pageName}_${nextSeed}`;
-    if (Route.routeIsExist(historyStack, pageKey)) {
-      return null;
+    const newHistroyStack = [...historyStack];
+    for (let i = 0, j = newHistroyStack.length; i < j; i += 1) {
+      if (newHistroyStack[i].seed > nextSeed) {
+        newHistroyStack[i].isDestroy = true;
+      }
+    }
+    if (!Route.routeIsExist(historyStack, pageKey)) {
+      newHistroyStack.push({
+        seed: nextSeed,
+        isDestroy: false,
+        path: nextPath,
+        pageKey,
+        pageName,
+        remainingPath,
+      });
     }
     return {
       seed: nextSeed,
       path: nextPath,
       pageKey,
       pageName,
+      isDestroy: false,
       remainingPath,
-      historyStack: [...historyStack, { seed: nextSeed, path: nextPath, pageKey, pageName, remainingPath }],
+      historyStack: newHistroyStack,
     };
   };
 
@@ -75,7 +92,8 @@ class Route extends React.Component<IRouteProps, IRouteState> {
     const pages: ReactElement[] = [];
     for (let i = 0, j = historyStack.length; i < j; i += 1) {
       const item: IStackItem = historyStack[i];
-      pages.push(<PageView key={item.pageKey} path={item.remainingPath} pageName={item.pageName} />);
+      const { isDestroy, pageKey, remainingPath, pageName } = item;
+      pages.push(<PageView isDestroy={isDestroy} key={pageKey} path={remainingPath} pageName={pageName} />);
     }
     return <div>{pages}</div>;
   };

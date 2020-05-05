@@ -45,7 +45,14 @@ class App {
   };
 
   private prepareaQuery = (path: string, query?: IQuery): IQuery => {
-    this.routeSeed += 1;
+    const curPathArr = RouteUtils.getPathArr();
+    const goToPathArr = RouteUtils.getPathArr(path);
+    // 如果是嵌套页面跳转到根页面一样的页面 那么就刷新当前内嵌页面
+    if (curPathArr.length === 1 && goToPathArr.length === 1) {
+      this.routeSeed += 1;
+    } else if (curPathArr[0] !== goToPathArr[0]) {
+      this.routeSeed += 1;
+    }
     if (query) {
       query[RouteUtils.routeSeedKey] = this.routeSeed;
       return query;

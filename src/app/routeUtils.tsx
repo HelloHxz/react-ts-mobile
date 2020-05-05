@@ -39,6 +39,22 @@ class RouteUtils {
     };
   };
 
+  public getPathArr = (routePath?: string): string[] => {
+    let path = routePath;
+    if (!path) {
+      path = this.getPathFromUrl();
+    }
+    const re: string[] = [];
+    const nameArr: string[] = path.split('/');
+    for (let i = 0, j = nameArr.length; i < j; i += 1) {
+      const pn = nameArr[i].toLocaleLowerCase();
+      if (pn !== '') {
+        re.push(pn);
+      }
+    }
+    return re;
+  };
+
   public getCurrentPageNameByRoutePath = (routePath: string): { pageName: string; remaining: string } => {
     const nameArr: string[] = routePath.split('/');
     const re = {

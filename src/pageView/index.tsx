@@ -5,6 +5,7 @@ import LazyPage from '../lazyPage';
 interface IPageViewProps {
   pageName: string;
   path: string;
+  isDestroy: boolean;
 }
 
 interface IPageViewState {
@@ -17,7 +18,7 @@ class PageView extends React.Component<IPageViewProps, IPageViewState> {
   }
 
   render = (): ReactElement => {
-    const { pageName } = this.props;
+    const { pageName, isDestroy } = this.props;
     const { initProps } = App;
     if (initProps) {
       const { pages } = initProps;
@@ -26,12 +27,13 @@ class PageView extends React.Component<IPageViewProps, IPageViewState> {
         return <div>NotFound {pageName}</div>;
       }
       if (p instanceof LazyPage) {
-        return <div>lazy</div>;
+        return <div>lazy {isDestroy ? 'sile' : 'huozhe'}</div>;
       }
       const Pa = p as React.FunctionComponent;
       return (
         <div>
           <Pa />
+          {isDestroy ? 'sile' : 'huozhe'}
         </div>
       );
     }
