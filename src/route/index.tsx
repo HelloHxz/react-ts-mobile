@@ -12,7 +12,6 @@ interface IStackItem {
   path: string;
   pageKey: string;
   seed: number;
-  isDestroy: boolean;
   remainingPath: string;
   pageName: string;
 }
@@ -20,11 +19,11 @@ interface IStackItem {
 interface IRouteState {
   path: string;
   seed: number;
-  isDestroy: boolean;
   remainingPath: string;
   pageName: string;
   pageKey: string;
   historyStack: IStackItem[];
+  destoryPage: IStackItem | null;
 }
 
 class Route extends React.Component<IRouteProps, IRouteState> {
@@ -34,10 +33,10 @@ class Route extends React.Component<IRouteProps, IRouteState> {
       path: '',
       seed: -1,
       pageName: '',
-      isDestroy: false,
       remainingPath: '',
       pageKey: '',
       historyStack: [],
+      destoryPage: null,
     };
   }
   static routeIsExist = (historyStack: IStackItem[], pageKey: string): boolean => {
@@ -60,16 +59,18 @@ class Route extends React.Component<IRouteProps, IRouteState> {
     const pageName = pathInfo.pageName;
     const remainingPath = pathInfo.remaining;
     const pageKey = `${pageName}_${nextSeed}`;
-    const newHistroyStack = [...historyStack];
-    for (let i = 0, j = newHistroyStack.length; i < j; i += 1) {
-      if (newHistroyStack[i].seed > nextSeed) {
-        newHistroyStack[i].isDestroy = true;
+    const newHistroyStack: IStackItem[] = [];
+    let destoryPage: IStackItem | null = null;
+    for (let i = 0, j = historyStack.length; i < j; i += 1) {
+      if (historyStack[i].seed > nextSeed) {
+        destoryPage = { ...historyStack[i] };
+      } else {
+        newHistroyStack.push({ ...historyStack[i] });
       }
     }
     if (!Route.routeIsExist(historyStack, pageKey)) {
       newHistroyStack.push({
         seed: nextSeed,
-        isDestroy: false,
         path: nextPath,
         pageKey,
         pageName,
@@ -81,19 +82,29 @@ class Route extends React.Component<IRouteProps, IRouteState> {
       path: nextPath,
       pageKey,
       pageName,
-      isDestroy: false,
       remainingPath,
+      destoryPage,
       historyStack: newHistroyStack,
     };
   };
 
   render = (): ReactElement => {
-    const { historyStack } = this.state;
+    const { historyStack, destoryPage } = this.state;
     const pages: ReactElement[] = [];
     for (let i = 0, j = historyStack.length; i < j; i += 1) {
       const item: IStackItem = historyStack[i];
-      const { isDestroy, pageKey, remainingPath, pageName } = item;
-      pages.push(<PageView isDestroy={isDestroy} key={pageKey} path={remainingPath} pageName={pageName} />);
+      const { pageKey, remainingPath, pageName } = item;
+      pages.push(<PageView isDestroy={false} key={pageKey} path={remainingPath} pageName={pageName} />);
+    }
+    if (destoryPage) {
+      pages.push(
+        <PageView
+          isDestroy={true}
+          key={destoryPage.pageKey}
+          path={destoryPage.remainingPath}
+          pageName={destoryPage.pageName}
+        />
+      );
     }
     return <div>{pages}</div>;
   };

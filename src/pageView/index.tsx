@@ -15,6 +15,8 @@ interface IPageViewState {
 class PageView extends React.Component<IPageViewProps, IPageViewState> {
   constructor(props: IPageViewProps) {
     super(props);
+    const { pageName, isDestroy } = this.props;
+    console.log(pageName+"  load");
   }
 
   render = (): ReactElement => {
