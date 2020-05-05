@@ -4,6 +4,7 @@ import LazyPage from '../lazyPage';
 
 interface IPageViewProps {
   pageName: string;
+  path: string;
 }
 
 interface IPageViewState {

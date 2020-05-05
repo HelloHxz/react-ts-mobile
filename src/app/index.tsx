@@ -41,10 +41,10 @@ class App {
     if (query) {
       delete query[RouteUtils.routeSeedKey];
     }
-    window.location.hash = RouteUtils.combinePathAndQuery(path, this.prepareaQuery(query));
+    window.location.hash = RouteUtils.combinePathAndQuery(path, this.prepareaQuery(path, query));
   };
 
-  private prepareaQuery = (query?: IQuery): IQuery => {
+  private prepareaQuery = (path: string, query?: IQuery): IQuery => {
     this.routeSeed += 1;
     if (query) {
       query[RouteUtils.routeSeedKey] = this.routeSeed;

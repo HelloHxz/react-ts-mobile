@@ -39,6 +39,27 @@ class RouteUtils {
     };
   };
 
+  public getCurrentPageNameByRoutePath = (routePath: string): { pageName: string; remaining: string } => {
+    const nameArr: string[] = routePath.split('/');
+    const re = {
+      pageName: '',
+      remaining: '',
+    };
+    const remainArr: string[] = [];
+    for (let i = 0, j = nameArr.length; i < j; i += 1) {
+      const pn = nameArr[i];
+      if (pn !== '') {
+        if (re.pageName === '') {
+          re.pageName = pn;
+        } else {
+          remainArr.push(pn);
+        }
+      }
+    }
+    re.remaining = remainArr.join('/');
+    return re;
+  };
+
   public combinePathAndQuery = (path: string, query?: IQuery): string => {
     let _path: string = path || '';
     if (_path.indexOf('#') === 0) {
